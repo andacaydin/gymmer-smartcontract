@@ -1,7 +1,27 @@
 pragma solidity >=0.4.22 <0.6.0;
-pragma experimental ABIEncoderV2;
 
+/***
+ *
+ * Interface that has to be implemented by GYMs Smart Contracts
+ *
+ */
+
+interface GymmerGymContract{
+    function calculateFee(uint startTime, uint endTime) external returns (int);
+    function getAddress() external returns (address);
+}
+
+
+/**
+ *
+ *
+ * The MAIN GYMMER Contract. All checkins, checkouts need to go through this smart-contract
+ *
+ */
 contract GymmerContract {
+
+
+
 
     /**
      *
@@ -16,21 +36,21 @@ contract GymmerContract {
     *
     */
     Gym[] private gyms;
-    mapping(address => Gym) public gymWallets;
+    mapping(address => Gym) gymWallets;
 
     /**
      *
      * Current Checkins By Gym.
      *
      */
-    mapping(address => Checkin[]) public gymCheckins;
+    mapping(address => Checkin[]) gymCheckins;
 
     /**
      *
      * Current Checkin By ID.
      *
      */
-    mapping(bytes32 => Checkin) public gymCheckinById;
+    mapping(bytes32 => Checkin) gymCheckinById;
 
 
     struct Gym {
@@ -39,33 +59,43 @@ contract GymmerContract {
     }
 
     struct Checkin {
-        Gym gym;
+        address gymContract;
         address gymuser;
         uint startTime;
         uint endTime;
         bytes32 checkinId;
+        int fee;
     }
 
-    function checkMeIn(address _gymWallet) public {
+    function checkMeIn(address _gymWallet, uint _startTime) public returns (bytes32 checkinId)  {
         bytes32 checkinId = sha256(abi.encode(msg.sender, _gymWallet, now));
-        Checkin memory checkin = Checkin(gymWallets[_gymWallet], msg.sender, 10, 0, checkinId);
+        Checkin memory checkin = Checkin(_gymWallet, msg.sender, _startTime, 0, checkinId, 0);
         gymCheckins[_gymWallet].push(checkin);
         gymCheckinById[checkinId] = checkin;
+        return checkinId;
     }
 
-    function checkMeOut(bytes32 checkinId) public {
+    function checkMeOut(bytes32 checkinId, uint _endTime) public {
         Checkin storage checkin = gymCheckinById[checkinId];
-        checkin.endTime = now;
+        checkin.endTime = _endTime;
+
+        checkin.fee = GymmerGymContract(checkin.gymContract).calculateFee(checkin.startTime, checkin.endTime);
     }
 
-    function getCheckins(address _gymWallet) public returns (uint256 currentCheckins, Checkin[] memory checkins) {
-        return (gymCheckins[_gymWallet].length, gymCheckins[_gymWallet]);
+    function getNumberCheckins(address _gymWallet) public returns (uint256 currentCheckins) {
+        return (gymCheckins[_gymWallet].length);
+    }
+
+    function getCheckinById(bytes32 checkinId) public returns(address gymAddress, address userAddress, uint startTime, uint endTime, int fee){
+        Checkin memory checkin = gymCheckinById[checkinId];
+        return (checkin.gymContract, checkin.gymuser, checkin.startTime, checkin.endTime, checkin.fee);
     }
 
     function addGym(string memory _gymName, address _gymWallet) public {
         Gym storage gym = gymWallets[_gymWallet];
         gym.gymName = _gymName;
-        gyms.push(Gym(_gymName, _gymWallet));
+        gym.wallet = _gymWallet;
+        gyms.push(gym);
 
     }
 
