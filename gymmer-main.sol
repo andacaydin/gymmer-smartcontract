@@ -7,7 +7,7 @@ pragma solidity >=0.4.22 <0.6.0;
  */
 
 interface GymmerGymContract{
-    function calculateFee(uint startTime, uint endTime) external returns (int);
+    function calculateFee(uint startTime, uint endTime) external returns (uint);
     function getAddress() external returns (address);
 }
 
@@ -64,7 +64,7 @@ contract GymmerContract {
         uint startTime;
         uint endTime;
         bytes32 checkinId;
-        int fee;
+        uint fee;
     }
 
     function checkMeIn(address _gymWallet, uint _startTime) public returns (bytes32 checkinId)  {
@@ -86,7 +86,7 @@ contract GymmerContract {
         return (gymCheckins[_gymWallet].length);
     }
 
-    function getCheckinById(bytes32 checkinId) public returns(address gymAddress, address userAddress, uint startTime, uint endTime, int fee){
+    function getCheckinById(bytes32 checkinId) public returns(address gymAddress, address userAddress, uint startTime, uint endTime, uint fee){
         Checkin memory checkin = gymCheckinById[checkinId];
         return (checkin.gymContract, checkin.gymuser, checkin.startTime, checkin.endTime, checkin.fee);
     }
