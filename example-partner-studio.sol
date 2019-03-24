@@ -57,7 +57,7 @@ contract ExamplePartnerStudio is GymmerGymContract {
         uint currentDay;
         (currentYear, currentMonth, currentDay) = timestampToDate(startTime);
         Rate[] memory ratesForWeekday = ratesForWeekdays[weekDay];
-        Rate memory closestRate = ratesForWeekday[0];
+        Rate memory closestRate;
         uint closestRateEndTimestamp;
 
         for (uint index = 0; index < ratesForWeekday.length; index++) {
@@ -66,7 +66,7 @@ contract ExamplePartnerStudio is GymmerGymContract {
 
             uint rateEndTimestamp = timestampFromDateTime(currentYear, currentMonth, currentDay, rateToCheck.endHour, rateToCheck.endMinute, rateToCheck.endSecond);
 
-            if (diffSeconds(closestRateEndTimestamp, startTime) < diffSeconds(rateEndTimestamp, startTime)) {
+            if (closestRateEndTimestamp == 0 || (diffSeconds(startTime, closestRateEndTimestamp) > diffSeconds(startTime, rateEndTimestamp))) {
                 closestRate = rateToCheck;
                 closestRateEndTimestamp = rateEndTimestamp;
             }
