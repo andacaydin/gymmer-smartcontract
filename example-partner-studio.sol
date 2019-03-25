@@ -26,10 +26,15 @@ contract ExamplePartnerStudio is GymmerGymContract {
     }
 
     function calculateFee(uint startTime, uint endTime) public returns (uint){
+        return calculateFeeInternal(startTime, endTime, 0, 0);
+    }
+    
+    function calculateFeeInternal(uint startTime, uint endTime, int callNo, uint fee) private returns (uint){
 
-        uint fee;
-
-        Rate memory closestRateEndTime = getClosestRateEndTime(startTime);
+        if(callNo > 2){
+            revert("More then 1 recursive calls!");
+        }
+        Rate memory closestRateEndTime = getEffectiveRate(startTime);
         uint currentYear;
         uint currentMonth;
         uint currentDay;
@@ -40,7 +45,8 @@ contract ExamplePartnerStudio is GymmerGymContract {
             fee = (endTime - startTime) / 60 / 60 * closestRateEndTime.rate;
         }
         else {
-            fee += calculateFee(rateEndTimestamp, endTime);
+            callNo++;
+            fee += calculateFeeInternal(rateEndTimestamp +1 , endTime, callNo, fee); //add a second so the next rate will be used
         }
         return fee;
     }
@@ -50,7 +56,7 @@ contract ExamplePartnerStudio is GymmerGymContract {
      * Gets the time-wise Rate with closest endtime
      *
      */
-    function getClosestRateEndTime(uint startTime) internal returns (Rate memory rate){
+    function getEffectiveRate(uint startTime) internal returns (Rate memory rate){
         uint weekDay = getDayOfWeek(startTime);
         uint currentYear;
         uint currentMonth;
@@ -63,10 +69,10 @@ contract ExamplePartnerStudio is GymmerGymContract {
         for (uint index = 0; index < ratesForWeekday.length; index++) {
 
             Rate memory rateToCheck = ratesForWeekday[index];
-
+            uint rateStartTimestamp = timestampFromDateTime(currentYear, currentMonth, currentDay, rateToCheck.startHour, rateToCheck.startMinute, rateToCheck.startSecond);
             uint rateEndTimestamp = timestampFromDateTime(currentYear, currentMonth, currentDay, rateToCheck.endHour, rateToCheck.endMinute, rateToCheck.endSecond);
-
-            if (closestRateEndTimestamp == 0 || (diffSeconds(startTime, closestRateEndTimestamp) > diffSeconds(startTime, rateEndTimestamp))) {
+            
+            if (startTime > rateStartTimestamp && startTime < rateEndTimestamp) {
                 closestRate = rateToCheck;
                 closestRateEndTimestamp = rateEndTimestamp;
             }
