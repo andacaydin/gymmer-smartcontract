@@ -11,5 +11,5 @@ from
 1552946400 (2019/03/18 @ 22:00:00) to
 1552986000 (2019/03/19 @ 09:00:00) to
 
-Test1: calculateFee("1552899600","1552903200") Expected -> 100
-Test2: calculateFee("1552899600","1552946400") Expected -> 211
+Test1: calculateFee("1552899600","1552903200") Expected -> 100 (1h * 100rate)
+Test2: calculateFee("1552899600","1552946400") Expected -> 210 (2h * 100rate + 10h * 1rate)
