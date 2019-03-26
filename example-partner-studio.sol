@@ -30,6 +30,7 @@ contract ExamplePartnerStudio is GymmerGymContract {
     }
     
     function calculateFeeInternal(uint startTime, uint endTime, int callNo, uint fee) private returns (uint){
+        
         callNo++;
         if(callNo > 2){
             revert("More then 2 recursive calls!");
@@ -41,12 +42,16 @@ contract ExamplePartnerStudio is GymmerGymContract {
         (currentYear, currentMonth, currentDay) = timestampToDate(endTime);
         uint rateEndTimestamp = timestampFromDateTime(currentYear, currentMonth, currentDay, closestRateEndTime.endHour, closestRateEndTime.endMinute, closestRateEndTime.endSecond);
 
-        if (rateEndTimestamp > endTime) {
-            fee = (endTime - startTime) / 60 / 60 * closestRateEndTime.rate;
+        if (rateEndTimestamp < endTime) {
+              fee += calculateFeeInternal(rateEndTimestamp +1 , endTime, callNo, fee); //add a second so the next rate will be used
+              log1(uinttoBytes(fee), "incoming fee");
+              endTime = rateEndTimestamp;
         }
-        else {
-            fee += calculateFeeInternal(rateEndTimestamp +1 , endTime, callNo, fee); //add a second so the next rate will be used
-        }
+    
+        fee += (endTime - startTime) / 60 / 60 * closestRateEndTime.rate;
+        log1(uinttoBytes(closestRateEndTime.rate), "used rate");
+    
+        log1(uinttoBytes(fee), "returning fee");
         return fee;
     }
 
@@ -74,7 +79,23 @@ contract ExamplePartnerStudio is GymmerGymContract {
                 effectiveRate = rateToCheck;
             }
         }
+        log1(stringToBytes32(effectiveRate.name), "chosen effectiveRate");
         return effectiveRate;
+    }
+
+    function uinttoBytes(uint256 x) private returns (bytes32 b) {
+        return bytes32(x);
+    }
+    
+    function stringToBytes32(string memory source) private returns (bytes32 result) {
+        bytes memory tempEmptyStringTest = bytes(source);
+        if (tempEmptyStringTest.length == 0) {
+            return 0x0;
+        }
+        
+        assembly {
+            result := mload(add(source, 32))
+        }
     }
 
     function getAddress() external returns (address){
