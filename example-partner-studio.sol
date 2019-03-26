@@ -30,9 +30,9 @@ contract ExamplePartnerStudio is GymmerGymContract {
     }
     
     function calculateFeeInternal(uint startTime, uint endTime, int callNo, uint fee) private returns (uint){
-
+        callNo++;
         if(callNo > 2){
-            revert("More then 1 recursive calls!");
+            revert("More then 2 recursive calls!");
         }
         Rate memory closestRateEndTime = getEffectiveRate(startTime);
         uint currentYear;
@@ -45,7 +45,6 @@ contract ExamplePartnerStudio is GymmerGymContract {
             fee = (endTime - startTime) / 60 / 60 * closestRateEndTime.rate;
         }
         else {
-            callNo++;
             fee += calculateFeeInternal(rateEndTimestamp +1 , endTime, callNo, fee); //add a second so the next rate will be used
         }
         return fee;
@@ -63,8 +62,7 @@ contract ExamplePartnerStudio is GymmerGymContract {
         uint currentDay;
         (currentYear, currentMonth, currentDay) = timestampToDate(startTime);
         Rate[] memory ratesForWeekday = ratesForWeekdays[weekDay];
-        Rate memory closestRate;
-        uint closestRateEndTimestamp;
+        Rate memory effectiveRate;
 
         for (uint index = 0; index < ratesForWeekday.length; index++) {
 
@@ -72,21 +70,16 @@ contract ExamplePartnerStudio is GymmerGymContract {
             uint rateStartTimestamp = timestampFromDateTime(currentYear, currentMonth, currentDay, rateToCheck.startHour, rateToCheck.startMinute, rateToCheck.startSecond);
             uint rateEndTimestamp = timestampFromDateTime(currentYear, currentMonth, currentDay, rateToCheck.endHour, rateToCheck.endMinute, rateToCheck.endSecond);
             
-            if (startTime > rateStartTimestamp && startTime < rateEndTimestamp) {
-                closestRate = rateToCheck;
-                closestRateEndTimestamp = rateEndTimestamp;
+            if (startTime >= rateStartTimestamp && startTime <= rateEndTimestamp) {
+                effectiveRate = rateToCheck;
             }
-
         }
-        return closestRate;
+        return effectiveRate;
     }
 
     function getAddress() external returns (address){
         return address(this);
     }
-
-
-
 
 
     //BokkyPooBahsDateTimeLibrary uses
