@@ -6,10 +6,15 @@ GYMMER Smartcontract to use in Ethereum Network. To process all GYM-OWNER, GYM-M
 # Business Proposition
 
 Blockchain technology and decentralization hits a multitude of business models. The fitness-industry will be revolutionized aswell and demand for more options and ways to form the personal fitness of customers will increase inevitably.
+
 GYMMER prepares it's core business-concept of limitless, borderless gym-visits by moving the most critical part of its infrastructure, the payment-process into the blockchain.
+
 This proof of concept is open-source so any interested reader can have a look at our progress in developing a secure, reliable smart-contract in the ethereum network which can be expanded indefinitely to cater any GYMs with different pricing-models.
+
 As intended by the ethereum foundation ether will only be used to fuel the transaction costs. To pay for a GYM-visit customers will use the GYMMER-Token, which is purchasable in a crypto-exchange like bitmart.com or binance.com or in the GYMMER-shop.
+
 To decide inflationary or deflationary measures a board of GYMMER and GYM executives will form, but all measures will be taken that GYMMER-Smartcontract and the underlying infrastructure is accessible, working and maintainable, without GYMMER itself:
+
 The goal is to write the infrastructure with keeping in mind that a company can be bought up, go bankrupt or stop operations for any reason, but the infrastructure built should survive and thrive.
 
 
@@ -18,9 +23,13 @@ The goal is to write the infrastructure with keeping in mind that a company can 
 
 ## GYM-MEMBER
 GYM-Member needs to have a crypto wallet containing GYMMER-Tokens. 
+
 Alternatively another app (GYMMER, GYM-specific...) can handle crypto-transactions for the user.
+
 The GYM-Member starts the checkin-process by sending a security (max-day-fee) to the GYMMER-SC and sending the starttime.
+
 The Checkout-process is triggered also by GYM-MEMBER and GYMMER smartcontract returns overpaid amount to user.
+
 
 ## Two main smart-contracts: 
 
