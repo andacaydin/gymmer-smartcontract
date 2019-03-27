@@ -15,26 +15,29 @@ The goal is to write the infrastructure with keeping in mind that a company can 
 
 
 # Technical overview
+
+## GYM-MEMBER
+GYM-Member needs to have a crypto wallet containing GYMMER-Tokens. 
+Alternatively another app (GYMMER, GYM-specific...) can handle crypto-transactions for the user.
+The GYM-Member starts the checkin-process by sending a security (max-day-fee) to the GYMMER-SC and sending the starttime.
+The Checkout-process is triggered also by GYM-MEMBER and GYMMER smartcontract returns overpaid amount to user.
+
 ## Two main smart-contracts: 
 
 ### GYMMER smartcontract
-** Handles checkin/checkout
-** Triggers GYM-OWNER-Smartcontract to receive entrance-fee
-** Defines Interface GYM-OWNER-Smartcontract needs to implement to be used
-** Holds list of all GYM-OWNER-Smartcontracts implementing Interface and is expandable indefinitely
-** Takes predefined fee and sends GYMMER-Tokens GYM-OWNER-SC, which were beforehand sent by GYM-MEMBER as security
-** Sends overpayment back to GYM-MEMBER
-
+* Handles checkin/checkout
+* Triggers GYM-OWNER-Smartcontract to receive calculated entrance-fee on checkout
+* Defines Interface GYM-OWNER-Smartcontract needs to implement to be used
+* Holds list of all GYM-OWNER-Smartcontracts implementing Interface and is expandable indefinitely
+* Takes predefined fee and sends GYMMER-Tokens GYM-OWNER-SC, which were beforehand sent by GYM-MEMBER as security
+* Sends overpayment back to GYM-MEMBER
 
 ### GYM-OWNER smartcontract
 
-** Needs to implement interface defined in GYMMER smartcontract
-** Calculates fee for user-visit by starttime & endtime or returns a fix-fee, depending on implementation
-** Receives GYMMER-Tokens for each visit of user when user checks out
+* Needs to implement interface defined in GYMMER smartcontract
+* Calculates fee for user-visit by starttime & endtime or returns a fix-fee, depending on implementation
+* Receives GYMMER-Tokens for each visit of user when user checks out
 
 
-## GYM-MEMBER
 
-The GYM-Member starts the checkin-process by sending a security (max-day-fee) to the GYMMER-SC and sending the starttime.
-The Checkout-process is triggered also and GYMMER smartcontract returns overpaid amount to user
 
