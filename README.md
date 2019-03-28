@@ -22,18 +22,18 @@ The goal is to write the infrastructure with keeping in mind that a company can 
 # Technical overview
 
 ## GYM-MEMBER
-GYM-Member needs to have a crypto wallet containing GYMMER-Tokens. 
+* GYM-Member needs to have a crypto wallet containing GYMMER-Tokens
 
-Alternatively another app (GYMMER, GYM-specific...) can handle crypto-transactions for the user.
+Alternatively another app (GYMMER, GYM-specific...) can handle crypto-transactions for the user
 
-The GYM-Member starts the checkin-process by sending a security (max-day-fee) to the GYMMER-SC and sending the starttime.
+* GYM-Member starts checkin-process by sending the starttime and a security (max-day-fee) to the GYMMER-SC
 
-The Checkout-process is triggered also by GYM-MEMBER and GYMMER smartcontract returns overpaid amount to user.
+* Checkout-process is triggered also by GYM-MEMBER and GYMMER smartcontract returns overpaid amount to user
 
 
 ## Two main smart-contracts: 
 
-### GYMMER smartcontract
+## GYMMER (smartcontract)
 * Handles checkin/checkout
 * Triggers GYM-OWNER-Smartcontract to receive calculated entrance-fee on checkout
 * Defines Interface GYM-OWNER-Smartcontract needs to implement to be used
@@ -41,7 +41,7 @@ The Checkout-process is triggered also by GYM-MEMBER and GYMMER smartcontract re
 * Takes predefined fee and sends GYMMER-Tokens GYM-OWNER-SC, which were beforehand sent by GYM-MEMBER as security
 * Sends overpayment back to GYM-MEMBER
 
-### GYM-OWNER smartcontract
+## GYM-OWNER (smartcontract)
 
 * Needs to implement interface defined in GYMMER smartcontract
 * Calculates fee for user-visit by starttime & endtime or returns a fix-fee, depending on implementation
