@@ -1,4 +1,4 @@
-# GYMMER-smartcontract: Decentralize your gym-visits.
+# GYMMER-smartcontract: Decentralize your Gym-Visits.
 see: http://www.gymmer.com for more information on our usecase
 
 GYMMER Smartcontract to use in Ethereum Network. To process all GYM-OWNER, GYM-MEMBER and GYMMER transactions.
