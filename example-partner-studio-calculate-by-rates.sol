@@ -1,3 +1,15 @@
+/*
+*   This Example SmartContract calculates the fees according to rates which have been added to the SmartContract before. 
+*   
+*   Effective rates for a given time-period on a specific weekday are recursively looped through and accumulated.
+*   Rate defined have to be the hourly rate of a visit.
+*
+*   Restrictions:
+*   - No time-gaps between two rates allowed, in which no rate is defined. 
+*   - Calculates within one weekday.
+*
+*/
+
 pragma solidity >=0.4.22 <0.6.0;
 
 import "./gymmer-main.sol";
