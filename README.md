@@ -49,4 +49,5 @@ Alternatively another app (GYMMER, GYM-specific...) can handle crypto-transactio
 
 
 
-
+Todos :
+* use safemath library for overflow protection 
